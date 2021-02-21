@@ -1,0 +1,11 @@
+{
+  "version": "0.1.0",
+  "description": "Windows Appliance",
+  "vm_name": "Windows_10",
+  "numvcpus": "2",
+  "memory": "4096",
+  "disk_size": "50720",
+  "guest_username": "vmuser",
+  "guest_password": "VM@Windows10",
+  "autounattend": "./answer/10/Autounattend.xml"
+}

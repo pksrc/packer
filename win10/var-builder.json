@@ -1,0 +1,11 @@
+{
+  "vcenter_server": "10.10.xx.xx",
+  "vcenter_username": "administrator@vsphere.local",
+  "vcenter_password": "P@ssw0rd",
+  "VM_folder": "Templates",
+  "esx_host": "/LAB/host/Mgmt",
+  "resource_pool": "",
+  "datastore": "datastore1-30(ssd)",
+  "network": "dPG-Access"
+}
+
