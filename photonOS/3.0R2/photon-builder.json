@@ -1,0 +1,8 @@
+{
+  "builder_host": "10.0.10.10",
+  "builder_host_username": "root",
+  "builder_host_password": "P@ssw0rd0",
+  "builder_host_datastore": "datastore2-10",
+  "builder_host_portgroup": "VM Network"
+}
+

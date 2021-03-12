@@ -1,0 +1,145 @@
+{
+  "variables": {
+    "photon_ovf_template": "photon.xml.template"
+  },
+  "builders": [
+    {
+      "name": "vsphere-iso",
+      "type": "vsphere-iso",
+      "vcenter_server": "{{user `vcenter_server`}}",
+      "username": "{{user `vcenter_username`}}",
+      "password": "{{user `vcenter_password`}}",
+      "insecure_connection": "true",
+      "host": "{{user `esx_host`}}",
+      "folder": "{{user `VM_folder`}}",
+      "resource_pool": "{{user `resource_pool`}}",
+      "datastore": "{{user `datastore`}}",
+      
+      "iso_checksum": "{{user `iso_checksum_type`}}:{{user `iso_checksum`}}",
+      "iso_urls": "{{user `iso_url`}}",
+      
+      "vm_name": "TEST-{{user `vm_name`}}",
+      "notes": "{{user `description`}} - {{user `version`}}",
+      "guest_os_type": "vmwarePhoton64Guest",
+      "CPUs": "{{user `num_cpus`}}",
+      "RAM": "{{user `mem_size`}}",
+      "RAM_reserve_all": true,
+      "network_adapters": [
+        {
+          "network": "{{user `network`}}",
+          "network_card": "vmxnet3"
+        }
+      ],
+      "disk_controller_type": "pvscsi",
+      "storage": [
+        {
+          "disk_size": "{{user `disk_size`}}",
+          "disk_thin_provisioned": true
+        }
+      ],
+
+      "http_directory": "http",
+      "http_ip": "10.10.0.8",
+      "boot_wait": "10s",
+      "boot_command": [
+        "<esc><wait>",
+        "vmlinuz initrd=initrd.img root=/dev/ram0 loglevel=3 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/photon-kickstart.json photon.media=cdrom insecure_installation=1 ip=dhcp",
+        "<enter>"
+      ],
+      "shutdown_command": "shutdown -P now",
+      
+      "convert_to_template": "false",
+      "create_snapshot": "true",
+      
+      "ssh_username": "{{user `guest_username`}}",
+      "ssh_password": "{{user `guest_password`}}",
+      "ssh_pty": true,
+      "ssh_timeout": "20m",
+      "ssh_handshake_attempts": "20"
+    },
+    {
+      "name": "vmware-iso",
+      "type": "vmware-iso",
+      "vm_name": "{{ user `vm_name` }}",
+      "guest_os_type": "Other",
+      "version": "13",
+      "disk_size": "12288",
+      "boot_command": [
+        "<esc><wait>",
+        "vmlinuz initrd=initrd.img root=/dev/ram0 loglevel=3 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/photon-kickstart.json photon.media=cdrom",
+        "<enter>"
+      ],
+      "boot_wait": "10s",
+      "headless": false,
+      "vnc_disable_password": true,
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "{{ user `iso_checksum_type` }}:{{ user `iso_checksum` }}",
+      "http_directory": "http",
+      "remote_type": "esx5",
+      "remote_host": "{{ user `builder_host` }}",
+      "remote_datastore": "{{ user `builder_host_datastore` }}",
+      "remote_username": "{{ user `builder_host_username` }}",
+      "remote_password": "{{ user `builder_host_password` }}",
+      "ssh_username": "{{ user `guest_username` }}",
+      "ssh_password": "{{ user `guest_password` }}",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "60m",
+      "format": "ovf",
+      "shutdown_command": "/sbin/shutdown -h now",
+      "shutdown_timeout": "1000s",
+      "vmx_data": {
+        "numvcpus": "{{ user `numvcpus` }}",
+        "memsize": "{{ user `ramsize` }}",
+        "ethernet0.networkName": "{{ user `builder_host_portgroup` }}",
+        "ethernet0.present": "TRUE",
+        "ethernet0.startConnected": "TRUE",
+        "ethernet0.virtualDev": "vmxnet3",
+        "ethernet0.addressType": "generated",
+        "ethernet0.wakeOnPcktRcv": "FALSE",
+        "annotation": "Version: {{ user `version` }}"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/photon-settings.sh",
+        "scripts/photon-cleanup.sh"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/rc.local",
+      "destination": "/etc/rc.d/rc.local"
+    },
+    {
+      "type": "file",
+      "source": "files",
+      "destination": "/root/"
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "files/setup-prometheus.sh",
+        "files/setup-grafana.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "shell-local",
+      "environment_vars": ["PHOTON_VERSION={{ user `version` }}", "PHOTON_APPLIANCE_NAME={{ user `vm_name` }}", "FINAL_PHOTON_APPLIANCE_NAME={{ user `vm_name` }}_{{user `version`}}", "PHOTON_OVF_TEMPLATE={{ user `photon_ovf_template` }}"],
+      "inline": [
+        "cd manual",
+        "#./add_ovf_properties.sh"
+      ]
+    },
+    {
+      "type": "shell-local",
+      "inline": [
+        "#pwsh -F unregister_vm.ps1 {{ user `vcenter_server` }} {{ user `vcenter_username` }} {{ user `vcenter_password` }} {{ user `vm_name` }}"
+      ]
+    }
+  ]
+}

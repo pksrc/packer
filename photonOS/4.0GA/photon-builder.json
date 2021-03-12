@@ -1,0 +1,18 @@
+{
+  "builder_host": "10.10.10.30",
+  "builder_host_username": "root",
+  "builder_host_password": "P@ssw0rd0",
+  "builder_host_datastore": "datastore1-30(ssd)",
+  "builder_host_portgroup": "dPG-Access",
+
+  "vcenter_server": "10.10.10.90",
+  "vcenter_username": "administrator@vsphere.local",
+  "vcenter_password": "P@ssw0rd0",
+  "VM_folder": "Templates",
+  "esx_host": "/LAB/host/Mgmt",
+  
+  "resource_pool": "",
+  "datastore": "datastore1-30(ssd)",
+  "network": "dPG-Access"
+}
+

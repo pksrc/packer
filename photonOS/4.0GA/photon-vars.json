@@ -1,0 +1,16 @@
+{
+  "version": "0.1.0",
+  "description": "PhotonOS Appliance",
+  "vm_name": "PhotonOS_Appliance",
+  "iso_checksum": "7e834b8b152e12fd7556e4e8e0e26f6ab5bf2737",
+  "iso_checksum_type": "sha1",
+  "iso_url": "https://packages.vmware.com/photon/4.0/GA/iso/photon-minimal-4.0-1526e30ba.iso",
+  "numvcpus": "2",
+  "ramsize": "4096",
+  "guest_username": "root",
+  "guest_password": "P@ssw0rd0",
+
+  "num_cpus": "2",
+  "mem_size": "2048",
+  "disk_size": "20960"
+}

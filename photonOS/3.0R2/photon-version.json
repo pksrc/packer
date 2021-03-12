@@ -1,0 +1,12 @@
+{
+  "version": "0.1.0",
+  "description": "PhotonOS Appliance",
+  "vm_name": "PhotonOS_Appliance",
+  "iso_checksum": "090f5c98b6b8406dbc3ad856aa1ed23bad1ce5b0",
+  "iso_checksum_type": "sha1",
+  "iso_url": "http://dl.bintray.com/vmware/photon/3.0/Rev2/iso/Update1/photon-minimal-3.0-a0f216d.iso",
+  "numvcpus": "2",
+  "ramsize": "4096",
+  "guest_username": "root",
+  "guest_password": "P@ssw0rd0"
+}
